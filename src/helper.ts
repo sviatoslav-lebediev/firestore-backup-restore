@@ -1,4 +1,4 @@
-import { GeoPoint } from "firebase-admin/firestore"
+import * as admin from 'firebase-admin'
 
 export interface IImportOptions {
   dates?: string[]
@@ -15,7 +15,6 @@ export interface IExportOptions {
   queryCollection?: (
     ref: FirebaseFirestore.CollectionReference
   ) => Promise<FirebaseFirestore.QuerySnapshot>
-  
 }
 
 export const makeGeoPoint = (geoValues: {
@@ -26,7 +25,7 @@ export const makeGeoPoint = (geoValues: {
     return null
   }
 
-  return new GeoPoint(geoValues._latitude, geoValues._longitude)
+  return new admin.firestore.GeoPoint(geoValues._latitude, geoValues._longitude)
 }
 
 /**
@@ -107,14 +106,14 @@ export const parseAndConvertDates = (data: object) => {
 }
 
 export function parseAndConvertGeos(data: object) {
-  traverseObjects(data, value => {
+  traverseObjects(data, (value) => {
     const isGeoPoint =
-      typeof value === "object" &&
-      value.hasOwnProperty("_latitude") &&
-      value.hasOwnProperty("_longitude");
+      typeof value === 'object' &&
+      value.hasOwnProperty('_latitude') &&
+      value.hasOwnProperty('_longitude')
     if (isGeoPoint) {
-      return makeGeoPoint(value);
+      return makeGeoPoint(value)
     }
-    return null;
+    return null
   })
 }

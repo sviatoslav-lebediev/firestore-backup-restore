@@ -79,4 +79,3 @@ typings/
 test/serviceAccountKey.json
 .idea
 .DS_Store
-dist

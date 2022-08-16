@@ -1,4 +1,4 @@
-import { getFirestore } from 'firebase-admin/firestore'
+import { firestore } from 'firebase-admin'
 import * as fs from 'fs'
 import { v1 as uuidv1 } from 'uuid'
 import {
@@ -20,7 +20,7 @@ export const restore = (
   fileName: string | Object,
   options: IImportOptions
 ): Promise<{ status: boolean; message: string }> => {
-  const db = getFirestore()
+  const db = firestore()
 
   return new Promise<{ status: boolean; message: string }>(
     (resolve, reject) => {

@@ -1,5 +1,4 @@
-import { cert, getApps, initializeApp } from 'firebase-admin/app';
-import {getFirestore} from 'firebase-admin/firestore'
+import * as admin from 'firebase-admin'
 import * as restoreService from './import'
 import * as backupService from './export'
 import { IExportOptions, IImportOptions } from './helper'
@@ -20,20 +19,18 @@ export const initializeFirebaseApp = (
   name = '[DEFAULT]',
   options: IInitializeAppOptions = {}
 ) => {
-  const apps = getApps()
-  if (
-    apps.length === 0 ||
-    (apps.length > 0 && apps[0].name !== name)
-  ) {
-    initializeApp(
-      {
-        credential: cert(serviceAccount),
-        databaseURL: serviceAccount['databaseURL'],
-      },
-      name
-    )
-    getFirestore().settings({ timestampsInSnapshots: true, ...options.firestore })
-  }
+  admin.initializeApp(
+    {
+      credential: admin.credential.cert(serviceAccount),
+      databaseURL: serviceAccount['databaseURL'],
+    },
+    name
+  )
+  admin.firestore().settings({
+    timestampsInSnapshots: true,
+    ...options.firestore,
+  })
+
   return true
 }
 
@@ -56,7 +53,11 @@ export const backup = (collectionName: string, options?: IExportOptions) => {
  * @param {IExportOptions} options
  * @return {json}
  */
-export const backupFromDoc = (collectionName: string, documentName: string, options?: IExportOptions) => {
+export const backupFromDoc = (
+  collectionName: string,
+  documentName: string,
+  options?: IExportOptions
+) => {
   return backupService.backupFromDoc(collectionName, documentName, options)
 }
 
